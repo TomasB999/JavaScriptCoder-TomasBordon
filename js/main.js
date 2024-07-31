@@ -133,4 +133,4 @@ function cotizarPrestamo() {
     }
 }
 
-cotizarPrestamo()
+cotizarPrestamo();
