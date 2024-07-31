@@ -56,6 +56,7 @@ function solicitarValorFinanciar() {
     return Number(valor);
 }
 
+
 function calcularFinanciacion(añosExperiencia, valorFinanciar) {
     let financiacion = 0;
     if (añosExperiencia >= 4) {
@@ -73,16 +74,27 @@ function calcularCuotas(valorFinanciado, cuotas) {
     return valorCuota;
 }
 
+const usuario = {
+    edad: 0,
+    ingresosNetos: 0,
+    añosExperiencia: 0,
+    valorFinanciar: 0
+};
+
+const minimoIngresos = 1000000;
+const minimoValorFinanciar = 3000000;
+const opcionesCuotas = [12, 24, 36, 48];
+
 function cotizarPrestamo() {
-    const edad = solicitarEdad();
+    usuario.edad = solicitarEdad();
 
-    if (edad >= 18) {
-        let ingresosNetos = solicitarIngresosNetos();
-        let añosExperiencia = solicitarExperienciaLaboral();
-        let valorFinanciar = solicitarValorFinanciar();
+    if (usuario.edad >= 18) {
+        usuario.ingresosNetos = solicitarIngresosNetos();
+        usuario.añosExperiencia = solicitarExperienciaLaboral();
+        usuario.valorFinanciar = solicitarValorFinanciar();
 
-        while (!(ingresosNetos >= 1000000 && añosExperiencia >= 1 && valorFinanciar >= 3000000)) {
-            alert("No cumple con los requisitos minimos para cotizar un prestamo. Por favor, intentelo nuevamente.");
+        while (!(usuario.ingresosNetos >= minimoIngresos && usuario.añosExperiencia >= 1 && usuario.valorFinanciar >= minimoValorFinanciar)) {
+            alert("No cumple con los requisitos mínimos para cotizar un préstamo. Por favor, intentelo nuevamente.");
             const opcion = prompt("¿Qué desea hacer?\n1. Reingresar datos\n2. Salir");
 
             if (opcion === "2") {
@@ -90,51 +102,35 @@ function cotizarPrestamo() {
                 return; // salir
             }
 
-            // volver a solicitar los datos 
+            // volver a solicitar los datos
             if (opcion === "1") {
-                if (!(ingresosNetos >= 1000000)) {
-                    ingresosNetos = solicitarIngresosNetos();
+                if (!(usuario.ingresosNetos >= minimoIngresos)) {
+                    usuario.ingresosNetos = solicitarIngresosNetos();
                 }
-                if (!(añosExperiencia >= 1)) {
-                    añosExperiencia = solicitarExperienciaLaboral();
+                if (!(usuario.añosExperiencia >= 1)) {
+                    usuario.añosExperiencia = solicitarExperienciaLaboral();
                 }
-                if (!(valorFinanciar >= 3000000)) {
-                    valorFinanciar = solicitarValorFinanciar();
+                if (!(usuario.valorFinanciar >= minimoValorFinanciar)) {
+                    usuario.valorFinanciar = solicitarValorFinanciar();
                 }
             }
         }
 
         // Solicitar cantidad de cuotas
-        const cuotas = prompt("Elija la cantidad de cuotas:\n1. 12 cuotas\n2. 24 cuotas\n3. 32 cuotas\n4. 42 cuotas");
-        let cantidadCuotas = 0;
-        switch (cuotas) {
-            case '1':
-                cantidadCuotas = 12;
-                break;
-            case '2':
-                cantidadCuotas = 24;
-                break;
-            case '3':
-                cantidadCuotas = 36;
-                break;
-            case '4':
-                cantidadCuotas = 48;
-                break;
-            default:
-                alert("Opcion invalida. Seleccionando 12 cuotas por defecto.");
-                cantidadCuotas = 12;
-                break;
-        }
+        const cuotasInput = prompt("Elija la cantidad de cuotas:\n1. 12 cuotas\n2. 24 cuotas\n3. 36 cuotas\n4. 48 cuotas");
 
-        const financiacion = calcularFinanciacion(añosExperiencia, valorFinanciar);
+        //el array
+        const index = parseInt(cuotasInput, 10) - 1;
+        const cantidadCuotas = opcionesCuotas[index] || 12; // Seleccionar cuotas o 12 por defecto
+
+        const financiacion = calcularFinanciacion(usuario.añosExperiencia, usuario.valorFinanciar);
         const valorCuota = calcularCuotas(financiacion, cantidadCuotas);
 
         // resultados
-        alert(`Detalles de la cotizacion:\n\nValor a financiar: ${financiacion}\nValor de cada cuota (${cantidadCuotas} cuotas): ${valorCuota}`);
-        
+        alert(`Detalles de la cotización:\n\nValor a financiar: ${financiacion}\nValor de cada cuota (${cantidadCuotas} cuotas): ${valorCuota}`);
     } else {
-        alert("Lo siento, se requiere ser mayor de edad para cotizar un prestamo.");
+        alert("Lo siento, se requiere ser mayor de edad para cotizar un préstamo.");
     }
 }
 
-cotizarPrestamo();
+cotizarPrestamo()
