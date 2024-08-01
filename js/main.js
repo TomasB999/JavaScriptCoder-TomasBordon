@@ -84,6 +84,7 @@ const usuario = {
 const minimoIngresos = 1000000;
 const minimoValorFinanciar = 3000000;
 const opcionesCuotas = [12, 24, 36, 48];
+const cuotasArray = opcionesCuotas.map(cuota => ({ opcion: cuota, valor: `${cuota} cuotas` }));
 
 function cotizarPrestamo() {
     usuario.edad = solicitarEdad();
@@ -119,9 +120,11 @@ function cotizarPrestamo() {
         // Solicitar cantidad de cuotas
         const cuotasInput = prompt("Elija la cantidad de cuotas:\n1. 12 cuotas\n2. 24 cuotas\n3. 36 cuotas\n4. 48 cuotas");
 
-        //el array
         const index = parseInt(cuotasInput, 10) - 1;
-        const cantidadCuotas = opcionesCuotas[index] || 12; // Seleccionar cuotas o 12 por defecto
+        const cuotasSeleccionadas = cuotasArray.find(cuota => cuota.opcion === opcionesCuotas[index]);
+
+        // Si la opción ingresada no es válida 12 cuotas por defecto
+        const cantidadCuotas = cuotasSeleccionadas ? cuotasSeleccionadas.opcion : 12;
 
         const financiacion = calcularFinanciacion(usuario.añosExperiencia, usuario.valorFinanciar);
         const valorCuota = calcularCuotas(financiacion, cantidadCuotas);
@@ -133,4 +136,4 @@ function cotizarPrestamo() {
     }
 }
 
-cotizarPrestamo()
+cotizarPrestamo();
