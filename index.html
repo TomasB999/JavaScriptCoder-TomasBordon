@@ -1,12 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primera Prentrega</title>
-</head>
-<body>
-<img src="./assets/images.jpg" alt="mclaren 765lt">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Primera Prentrega</title>
+    </head>
+    <body>
+        <div class="parallax"></div>
+
+        <div class="container">
+            <div>
+                <h1>Simulación de Préstamo Prendario</h1>
+            </div>
+        </div>
+        <div class="container2">
+            <div><h3>Bienvenido a TomCars: Tu Aliado en la Compra de Autos <br><br>
+                En TomCars, estamos aquí para hacer realidad tu sueño de tener el auto perfecto. Con años de experiencia y un equipo dedicado, te ofrecemos una cotización clara y confiable para ayudarte a encontrar la mejor opción de financiamiento.
+                
+                Confía en nosotros para una experiencia sin complicaciones y descubre cómo puedes comenzar a conducir tu auto ideal hoy mismo.
+                
+                </h3></div>
+        </div>
+        <form id="cotizacionForm">
+        <h2>Bienvenido a TomCars</h2>
+        <p>Por favor, Para empezar con el proceso de cotizacion ingresa los siguientes datos:</p>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required><br><br>
+        
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" required><br><br>
+        
+        <label for="ingresos">Ingresos Netos (mínimo 1 millón):</label>
+        <input type="number" id="ingresos" required><br><br>
+        
+        <label for="experiencia">Años de Experiencia Laboral (mínimo 1 año):</label>
+        <input type="number" id="experiencia" required><br><br>
+        
+        <label for="valorAuto">Valor del Auto (mínimo 3 millones):</label>
+        <input type="number" id="valorAuto" required><br><br>
+        
+        <button type="submit">Cotizar</button>
+    </form>
+
+    <div id="formularioFinanciacion" style="display: none;">
+        <h2>Información de Financiación</h2>
+        <p>El monto máximo que puedes financiar es: <span id="montoMaximo"></span></p>
+        
+        <form id="formularioFinanciacionForm">
+            <label for="montoFinanciar">Monto a Financiar:</label>
+            <input type="number" id="montoFinanciar" required><br><br>
+            
+            <label for="cuotas">Elige la cantidad de cuotas:</label>
+            <input type="number" id="cuotas" placeholder="12, 24, 36, 48" required><br><br>
+            
+            <button type="submit">Calcular Cuotas</button>
+        </form>
+    </div>
+
+    <div id="resumenFinal" style="display: none;">
+        <h2>Resumen de la Cotización</h2>
+        <p id="nombreFinal"></p>
+        <p id="edadFinal"></p>
+        <p id="ingresosFinal"></p>
+        <p id="experienciaFinal"></p>
+        <p id="valorAutoFinal"></p>
+        <p id="montoFinanciarFinal"></p>
+        <p id="cuotasFinal"></p>
+        <p id="valorCuotaFinal"></p>
+    </div>
+    <footer>
+        <div class="footer">
+            <p>Copyright © TomCars</p>
+        </div>
+    </footer>
     <script src="js/main.js"></script>
 </body>
 </html>

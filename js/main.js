@@ -7,54 +7,36 @@
 // 6. 4 opciones: minimo 12 cuotas , 24 cuotas , 32 cuotas , hasta 42 cuotas. (divido el valor total financiable en la cantidad de cuotas)
 // 7. arrojo los datos de cuanto a financiar, precio y cantidad de las cuotas.
 
-
-
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // function Bienvenido(nombre) {
 //     alert("Hola, " + nombre + "\nSomos TomCars, una empresa de Préstamos Prendarios de Tasa Fija.\nSi desea cotizar un Préstamo Prendario para un vehículo, conteste las siguientes preguntas.");
 // }
 
-// const nombre = prompt("Bienvenido a TomCars. Ingresá tu nombre");
+// const nombre = prompt("Bienvenido a TomCars. Ingresa tu nombre");
 // Bienvenido(nombre);
 
+// function solicitarEdad() {
+//     let edad = prompt("Ingresa tu edad");
+//     return Number(edad);
+// }
 
-// let edad = prompt("Ingresá tu edad");
-// edad = Number(edad);
+// function solicitarIngresosNetos() {
+//     let ingresos = prompt("Ingresa tus Ingresos Netos (mínimo 1 millón)");
+//     return Number(ingresos);
+// }
 
-// if (edad >= 18) {
-//     console.log('Es mayor de edad');
-// } else {
-//     console.log('Es menor de edad');
+// function solicitarExperienciaLaboral() {
+//     let años = prompt("Ingrese años de experiencia laboral (mínimo 1 año)");
+//     return Number(años);
+// }
+
+// function solicitarValorFinanciar() {
+//     let valor = prompt("Ingrese el valor que necesita financiar (mínimo financiable: 3 millones)");
+//     return Number(valor);
 // }
 
 
-
-
-function Bienvenido(nombre) {
-    alert("Hola, " + nombre + "\nSomos TomCars, una empresa de Préstamos Prendarios de Tasa Fija.\nSi desea cotizar un Préstamo Prendario para un vehículo, conteste las siguientes preguntas.");
-}
-
-const nombre = prompt("Bienvenido a TomCars. Ingresa tu nombre");
-Bienvenido(nombre);
-
-function solicitarEdad() {
-    let edad = prompt("Ingresa tu edad");
-    return Number(edad);
-}
-
-function solicitarIngresosNetos() {
-    let ingresos = prompt("Ingresa tus Ingresos Netos (mínimo 1 millón)");
-    return Number(ingresos);
-}
-
-function solicitarExperienciaLaboral() {
-    let años = prompt("Ingrese años de experiencia laboral (mínimo 1 año)");
-    return Number(años);
-}
-
-function solicitarValorFinanciar() {
-    let valor = prompt("Ingrese el valor que necesita financiar (mínimo financiable: 3 millones)");
-    return Number(valor);
-}
+const usuarios = [];
 
 
 function calcularFinanciacion(añosExperiencia, valorFinanciar) {
@@ -70,70 +52,72 @@ function calcularFinanciacion(añosExperiencia, valorFinanciar) {
 }
 
 function calcularCuotas(valorFinanciado, cuotas) {
-    let valorCuota = valorFinanciado / cuotas;
-    return valorCuota;
+    return valorFinanciado / cuotas;
 }
 
-const usuario = {
-    edad: 0,
-    ingresosNetos: 0,
-    añosExperiencia: 0,
-    valorFinanciar: 0
-};
+document.getElementById("cotizacionForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-const minimoIngresos = 1000000;
-const minimoValorFinanciar = 3000000;
-const opcionesCuotas = [12, 24, 36, 48];
-const cuotasArray = opcionesCuotas.map(cuota => ({ opcion: cuota, valor: `${cuota} cuotas` }));
+    const nombre = document.getElementById("nombre").value;
+    const edad = Number(document.getElementById("edad").value);
+    const ingresosNetos = Number(document.getElementById("ingresos").value);
+    const añosExperiencia = Number(document.getElementById("experiencia").value);
+    const valorAuto = Number(document.getElementById("valorAuto").value);
 
-function cotizarPrestamo() {
-    usuario.edad = solicitarEdad();
+    if (edad >= 18 && ingresosNetos >= 1000000 && añosExperiencia >= 1 && valorAuto >= 3000000) {
+        const financiacionMaxima = calcularFinanciacion(añosExperiencia, valorAuto);
 
-    if (usuario.edad >= 18) {
-        usuario.ingresosNetos = solicitarIngresosNetos();
-        usuario.añosExperiencia = solicitarExperienciaLaboral();
-        usuario.valorFinanciar = solicitarValorFinanciar();
+        document.getElementById("cotizacionForm").style.display = "none";
+        document.getElementById("formularioFinanciacion").style.display = "block";
 
-        while (!(usuario.ingresosNetos >= minimoIngresos && usuario.añosExperiencia >= 1 && usuario.valorFinanciar >= minimoValorFinanciar)) {
-            alert("No cumple con los requisitos mínimos para cotizar un préstamo. Por favor, intentelo nuevamente.");
-            const opcion = prompt("¿Qué desea hacer?\n1. Reingresar datos\n2. Salir");
-
-            if (opcion === "2") {
-                alert("Gracias por visitar TomCars. Hasta luego.");
-                return; // salir
-            }
-
-            // volver a solicitar los datos
-            if (opcion === "1") {
-                if (!(usuario.ingresosNetos >= minimoIngresos)) {
-                    usuario.ingresosNetos = solicitarIngresosNetos();
-                }
-                if (!(usuario.añosExperiencia >= 1)) {
-                    usuario.añosExperiencia = solicitarExperienciaLaboral();
-                }
-                if (!(usuario.valorFinanciar >= minimoValorFinanciar)) {
-                    usuario.valorFinanciar = solicitarValorFinanciar();
-                }
-            }
-        }
-
-        // Solicitar cantidad de cuotas
-        const cuotasInput = prompt("Elija la cantidad de cuotas:\n1. 12 cuotas\n2. 24 cuotas\n3. 36 cuotas\n4. 48 cuotas");
-
-        const index = parseInt(cuotasInput, 10) - 1;
-        const cuotasSeleccionadas = cuotasArray.find(cuota => cuota.opcion === opcionesCuotas[index]);
-
-        // Si la opción ingresada no es válida 12 cuotas por defecto
-        const cantidadCuotas = cuotasSeleccionadas ? cuotasSeleccionadas.opcion : 12;
-
-        const financiacion = calcularFinanciacion(usuario.añosExperiencia, usuario.valorFinanciar);
-        const valorCuota = calcularCuotas(financiacion, cantidadCuotas);
-
-        // resultados
-        alert(`Detalles de la cotización:\n\nValor a financiar: ${financiacion}\nValor de cada cuota (${cantidadCuotas} cuotas): ${valorCuota}`);
+        document.getElementById("montoMaximo").textContent = `$${financiacionMaxima.toFixed(2)}`;
+        
+        
+        const datosUsuario = {
+            nombre: nombre,
+            edad: edad,
+            ingresosNetos: ingresosNetos,
+            añosExperiencia: añosExperiencia,
+            valorAuto: valorAuto,
+            financiacionMaxima: financiacionMaxima
+        };
+        sessionStorage.setItem("datosUsuario", JSON.stringify(datosUsuario));
     } else {
-        alert("Lo siento, se requiere ser mayor de edad para cotizar un préstamo.");
+        alert("No cumple con los requisitos mínimos para cotizar un préstamo.");
+        document.getElementById("cotizacionForm").reset();
     }
-}
+});
 
-cotizarPrestamo();
+
+document.getElementById("formularioFinanciacionForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const montoFinanciar = Number(document.getElementById("montoFinanciar").value);
+    const cuotas = Number(document.getElementById("cuotas").value);
+
+    
+    const datosUsuario = JSON.parse(sessionStorage.getItem("datosUsuario"));
+    const financiacionMaxima = datosUsuario ? datosUsuario.financiacionMaxima : 0;
+
+    if (montoFinanciar <= financiacionMaxima) {
+        const valorCuota = calcularCuotas(montoFinanciar, cuotas);
+
+        
+        document.getElementById("formularioFinanciacion").style.display = "none";
+        document.getElementById("resumenFinal").style.display = "block";
+
+        // resumen final
+        document.getElementById("nombreFinal").textContent = `Nombre: ${datosUsuario.nombre}`;
+        document.getElementById("edadFinal").textContent = `Edad: ${datosUsuario.edad}`;
+        document.getElementById("ingresosFinal").textContent = `Ingresos Netos: $${datosUsuario.ingresosNetos}`;
+        document.getElementById("experienciaFinal").textContent = `Años de Experiencia Laboral: ${datosUsuario.añosExperiencia}`;
+        document.getElementById("valorAutoFinal").textContent = `Valor del Auto: $${datosUsuario.valorAuto}`;
+        document.getElementById("montoFinanciarFinal").textContent = `Monto a Financiar: $${montoFinanciar}`;
+        document.getElementById("cuotasFinal").textContent = `Cantidad de Cuotas: ${cuotas}`;
+        document.getElementById("valorCuotaFinal").textContent = `Valor de cada Cuota: $${valorCuota.toFixed(2)}`;
+    } else {
+        alert("El monto a financiar no puede exceder el máximo permitido.");
+        document.getElementById("formularioFinanciacionForm").reset();
+    }
+});
+
