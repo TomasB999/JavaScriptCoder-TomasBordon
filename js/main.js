@@ -8,36 +8,57 @@
 // 7. arrojo los datos de cuanto a financiar, precio y cantidad de las cuotas.
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// function Bienvenido(nombre) {
-//     alert("Hola, " + nombre + "\nSomos TomCars, una empresa de Préstamos Prendarios de Tasa Fija.\nSi desea cotizar un Préstamo Prendario para un vehículo, conteste las siguientes preguntas.");
-// }
 
-// const nombre = prompt("Bienvenido a TomCars. Ingresa tu nombre");
-// Bienvenido(nombre);
+document.addEventListener('DOMContentLoaded', function() {
+    function cargarDatosEjemplo() {
+        fetch('./js/data.json')
+            .then(response => response.json())
+            .then(data => {
+                const listaAprobados = document.getElementById('listaAprobados');
+                listaAprobados.innerHTML = '';
 
-// function solicitarEdad() {
-//     let edad = prompt("Ingresa tu edad");
-//     return Number(edad);
-// }
+                data.forEach(prestamo => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Nombre: ${prestamo.nombre}, Edad: ${prestamo.edad}, Ingresos Netos: $${prestamo.ingresosNetos}, Años de Experiencia: ${prestamo.añosExperiencia}, Valor del Auto: $${prestamo.valorAuto}, Monto a Financiar: $${prestamo.montoFinanciar}, Cuotas: ${prestamo.cuotas}, Valor Cuota: $${prestamo.valorCuota}`;
+                    listaAprobados.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener los datos:', error);
+            });
+    }
 
-// function solicitarIngresosNetos() {
-//     let ingresos = prompt("Ingresa tus Ingresos Netos (mínimo 1 millón)");
-//     return Number(ingresos);
-// }
+    function mostrarHistorial() {
+        const listaHistorial = document.getElementById("listaHistorial");
+        let historialCotizaciones = JSON.parse(localStorage.getItem("historialCotizaciones")) || [];
+        listaHistorial.innerHTML = '';
 
-// function solicitarExperienciaLaboral() {
-//     let años = prompt("Ingrese años de experiencia laboral (mínimo 1 año)");
-//     return Number(años);
-// }
+        historialCotizaciones.forEach(cotizacion => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `Nombre: ${cotizacion.nombre}, Edad: ${cotizacion.edad}, 
+                                    Ingresos: $${cotizacion.ingresosNetos}, Años de Experiencia: ${cotizacion.añosExperiencia}, 
+                                    Valor del Auto: $${cotizacion.valorAuto}, Monto Financiado: $${cotizacion.montoFinanciar}, 
+                                    Cuotas: ${cotizacion.cuotas}, Valor Cuota: $${cotizacion.valorCuota}`;
+            listaHistorial.appendChild(listItem);
+        });
 
-// function solicitarValorFinanciar() {
-//     let valor = prompt("Ingrese el valor que necesita financiar (mínimo financiable: 3 millones)");
-//     return Number(valor);
-// }
+        if (historialCotizaciones.length === 0) {
+            document.getElementById("mensajeHistorial").style.display = "block";
+        } else {
+            document.getElementById("mensajeHistorial").style.display = "none";
+        }
+    }
 
+    cargarDatosEjemplo();
+    mostrarHistorial();
+
+    document.getElementById("limpiarHistorial").addEventListener("click", function() {
+        localStorage.removeItem("historialCotizaciones");
+        mostrarHistorial();
+    });
+});
 
 const usuarios = [];
-
 
 function calcularFinanciacion(añosExperiencia, valorFinanciar) {
     let financiacion = 0;
@@ -71,8 +92,7 @@ document.getElementById("cotizacionForm").addEventListener("submit", function(ev
         document.getElementById("formularioFinanciacion").style.display = "block";
 
         document.getElementById("montoMaximo").textContent = `$${financiacionMaxima.toFixed(2)}`;
-        
-        
+
         const datosUsuario = {
             nombre: nombre,
             edad: edad,
@@ -83,11 +103,16 @@ document.getElementById("cotizacionForm").addEventListener("submit", function(ev
         };
         sessionStorage.setItem("datosUsuario", JSON.stringify(datosUsuario));
     } else {
-        alert("No cumple con los requisitos mínimos para cotizar un préstamo.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No cumple con los requisitos mínimos para cotizar un préstamo.',
+        });
         document.getElementById("cotizacionForm").reset();
     }
 });
 
+const cuotasValidas = [12, 24, 36, 48];
 
 document.getElementById("formularioFinanciacionForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -95,18 +120,43 @@ document.getElementById("formularioFinanciacionForm").addEventListener("submit",
     const montoFinanciar = Number(document.getElementById("montoFinanciar").value);
     const cuotas = Number(document.getElementById("cuotas").value);
 
-    
+    if (!cuotasValidas.includes(cuotas)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Por favor, elige una cantidad de cuotas válida: 12, 24, 36 o 48',
+        });
+        document.getElementById("montoFinanciar").value = '';
+        document.getElementById("cuotas").value = '';
+        return;
+    }
+
     const datosUsuario = JSON.parse(sessionStorage.getItem("datosUsuario"));
     const financiacionMaxima = datosUsuario ? datosUsuario.financiacionMaxima : 0;
 
     if (montoFinanciar <= financiacionMaxima) {
         const valorCuota = calcularCuotas(montoFinanciar, cuotas);
 
-        
+        let historialCotizaciones = JSON.parse(localStorage.getItem("historialCotizaciones")) || [];
+        const nuevaCotizacion = {
+            nombre: datosUsuario.nombre,
+            edad: datosUsuario.edad,
+            ingresosNetos: datosUsuario.ingresosNetos,
+            añosExperiencia: datosUsuario.añosExperiencia,
+            valorAuto: datosUsuario.valorAuto,
+            montoFinanciar: montoFinanciar,
+            cuotas: cuotas,
+            valorCuota: valorCuota,
+        };
+
+        sessionStorage.removeItem("datosUsuario");
+
+        historialCotizaciones.push(nuevaCotizacion);
+        localStorage.setItem("historialCotizaciones", JSON.stringify(historialCotizaciones));
+
         document.getElementById("formularioFinanciacion").style.display = "none";
         document.getElementById("resumenFinal").style.display = "block";
 
-        // resumen final
         document.getElementById("nombreFinal").textContent = `Nombre: ${datosUsuario.nombre}`;
         document.getElementById("edadFinal").textContent = `Edad: ${datosUsuario.edad}`;
         document.getElementById("ingresosFinal").textContent = `Ingresos Netos: $${datosUsuario.ingresosNetos}`;
@@ -116,8 +166,15 @@ document.getElementById("formularioFinanciacionForm").addEventListener("submit",
         document.getElementById("cuotasFinal").textContent = `Cantidad de Cuotas: ${cuotas}`;
         document.getElementById("valorCuotaFinal").textContent = `Valor de cada Cuota: $${valorCuota.toFixed(2)}`;
     } else {
-        alert("El monto a financiar no puede exceder el máximo permitido.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'El monto a financiar no puede exceder el máximo permitido.',
+        });
         document.getElementById("formularioFinanciacionForm").reset();
     }
+});
+document.getElementById("volverInicio").addEventListener("click", function() {
+    location.reload(); 
 });
 

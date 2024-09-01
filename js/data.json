@@ -1,0 +1,22 @@
+[
+    {
+        "nombre": "Tomas Bordon",
+        "edad": 18,
+        "ingresosNetos": 1500000,
+        "añosExperiencia": 1,
+        "valorAuto": 4000000,
+        "montoFinanciar": 2000000,
+        "cuotas": 24,
+        "valorCuota": 83333.33
+    },
+    {
+        "nombre": "Franco Colapinto",
+        "edad": 21,
+        "ingresosNetos": 99999999999,
+        "añosExperiencia": 8,
+        "valorAuto": 24000000,
+        "montoFinanciar": 8000000,
+        "cuotas": 36,
+        "valorCuota": 222222.22
+    }
+]
